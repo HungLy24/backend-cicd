@@ -13,7 +13,11 @@ const MONGO_URI = process.env.MONGO_URI;
 let db;
 
 async function connectDB() {
-  const client = new MongoClient(MONGO_URI);
+  const client = new MongoClient(MONGO_URI, {
+    tls: true,
+    retryWrites: true,
+    serverSelectionTimeoutMS: 10000,
+  });
   await client.connect();
   db = client.db();
   console.log("✅ Connected MongoDB");
@@ -43,4 +47,5 @@ connectDB()
   }))
   .catch(err => {
     console.log("❌ Lỗi MongoDB:", err.message);
+    process.exit(1);
   });
